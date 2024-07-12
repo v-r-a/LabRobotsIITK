@@ -1,0 +1,309 @@
+\hypertarget{classRobotAPI__class_1_1RobotAPI}{}\doxysection{Robot\+API\+\_\+class.\+Robot\+API Class Reference}
+\label{classRobotAPI__class_1_1RobotAPI}\index{RobotAPI\_class.RobotAPI@{RobotAPI\_class.RobotAPI}}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classRobotAPI__class_1_1RobotAPI_aa427b63ebc84286763c98e95286511b1}\label{classRobotAPI__class_1_1RobotAPI_aa427b63ebc84286763c98e95286511b1}} 
+def {\bfseries \+\_\+\+\_\+init\+\_\+\+\_\+} (self, str port, int baud\+\_\+rate, str robot\+\_\+type)
+\item 
+\mbox{\Hypertarget{classRobotAPI__class_1_1RobotAPI_ab1c8fcda4f0904104c96d2c0e346d951}\label{classRobotAPI__class_1_1RobotAPI_ab1c8fcda4f0904104c96d2c0e346d951}} 
+def {\bfseries \+\_\+\+\_\+del\+\_\+\+\_\+} (self)
+\item 
+def \mbox{\hyperlink{classRobotAPI__class_1_1RobotAPI_a2afefe6ed35cf63f8adf7f51c69038ba}{ping\+Test}} (self, int motor\+ID)
+\item 
+def \mbox{\hyperlink{classRobotAPI__class_1_1RobotAPI_ad4faa5bbe5948edcfeb947cf11ad3f9a}{set\+Torque\+ON}} (self, int motor\+ID)
+\item 
+def \mbox{\hyperlink{classRobotAPI__class_1_1RobotAPI_ac2a1b706c2a722ad152424c67dc68a4e}{set\+Torque\+OFF}} (self, int motor\+ID)
+\item 
+def \mbox{\hyperlink{classRobotAPI__class_1_1RobotAPI_acb657644d77fb641c691457a0061b1e2}{get\+Torque\+Status}} (self, int motor\+ID)
+\item 
+def \mbox{\hyperlink{classRobotAPI__class_1_1RobotAPI_ae14604d933d67e5ad5759767f98cb546}{get\+Joint\+Angle}} (self, int motor\+ID, str unit=\char`\"{}rad\char`\"{})
+\item 
+def \mbox{\hyperlink{classRobotAPI__class_1_1RobotAPI_a978b74015757f7ea65b35be6ccd55790}{set\+Joint\+Angle}} (self, int motor\+ID, float angle, str unit=\char`\"{}rad\char`\"{})
+\item 
+def \mbox{\hyperlink{classRobotAPI__class_1_1RobotAPI_a69fcb8c2a39f62a6e33f4af550df3e23}{pen\+Down}} (self)
+\item 
+def \mbox{\hyperlink{classRobotAPI__class_1_1RobotAPI_a0202f23a9fd3c3bede1f40805c3f5108}{pen\+Up}} (self)
+\item 
+def \mbox{\hyperlink{classRobotAPI__class_1_1RobotAPI_a70fd3eee9c5515bd6d3cb966360115be}{get\+Joint\+State}} (self, int motor\+ID)
+\item 
+def \mbox{\hyperlink{classRobotAPI__class_1_1RobotAPI_a5cf25a94cb093c6c35052e04fd40e077}{set\+Joint\+State}} (self, int motor\+ID, list state)
+\item 
+def \mbox{\hyperlink{classRobotAPI__class_1_1RobotAPI_a3eb828de8c4f5f02797bc613934fc77b}{get\+Robot\+State}} (self)
+\item 
+def \mbox{\hyperlink{classRobotAPI__class_1_1RobotAPI_ae5831149fe7268cd8d76331b8d8c5703}{set\+Robot\+State}} (self, list state)
+\item 
+def \mbox{\hyperlink{classRobotAPI__class_1_1RobotAPI_a084b460226f2a4568d90f5916c42fe3b}{go\+Home}} (self)
+\item 
+def \mbox{\hyperlink{classRobotAPI__class_1_1RobotAPI_a78f0e110318fa8c5758581f7ed93c172}{set\+Get\+Robot\+State}} (self, list state)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classRobotAPI__class_1_1RobotAPI_a4873d3b5d02c45c5b9cbca15d7551d76}\label{classRobotAPI__class_1_1RobotAPI_a4873d3b5d02c45c5b9cbca15d7551d76}} 
+{\bfseries link}
+\item 
+\mbox{\Hypertarget{classRobotAPI__class_1_1RobotAPI_ab7016eec122c7e90c29789f353709783}\label{classRobotAPI__class_1_1RobotAPI_ab7016eec122c7e90c29789f353709783}} 
+{\bfseries rob}
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classRobotAPI__class_1_1RobotAPI_aea9796258d72ab1d148bf89b7d36fac6}\label{classRobotAPI__class_1_1RobotAPI_aea9796258d72ab1d148bf89b7d36fac6}} 
+int {\bfseries ADDR\+\_\+\+PC} = 100
+\item 
+\mbox{\Hypertarget{classRobotAPI__class_1_1RobotAPI_aac0d3a02a2bc0dbac40cc01ba0ee4281}\label{classRobotAPI__class_1_1RobotAPI_aac0d3a02a2bc0dbac40cc01ba0ee4281}} 
+int {\bfseries ADDR\+\_\+\+MEGA} = 200
+\item 
+\mbox{\Hypertarget{classRobotAPI__class_1_1RobotAPI_aa10f9c112a9b82e16e541af54d2db0db}\label{classRobotAPI__class_1_1RobotAPI_aa10f9c112a9b82e16e541af54d2db0db}} 
+int {\bfseries FC\+\_\+\+PING} = 1
+\item 
+\mbox{\Hypertarget{classRobotAPI__class_1_1RobotAPI_acfd2d9bd0522a22aafc937b84c25ac93}\label{classRobotAPI__class_1_1RobotAPI_acfd2d9bd0522a22aafc937b84c25ac93}} 
+int {\bfseries FC\+\_\+\+TORQUE\+\_\+\+ON} = 2
+\item 
+\mbox{\Hypertarget{classRobotAPI__class_1_1RobotAPI_aed41c97eb5553e4ad6a8a2bea8a4192c}\label{classRobotAPI__class_1_1RobotAPI_aed41c97eb5553e4ad6a8a2bea8a4192c}} 
+int {\bfseries FC\+\_\+\+TORQUE\+\_\+\+OFF} = 3
+\item 
+\mbox{\Hypertarget{classRobotAPI__class_1_1RobotAPI_a56cc4cb4833899b1735557e11097bb6b}\label{classRobotAPI__class_1_1RobotAPI_a56cc4cb4833899b1735557e11097bb6b}} 
+int {\bfseries FC\+\_\+\+TORQUE\+\_\+\+STATUS} = 4
+\item 
+\mbox{\Hypertarget{classRobotAPI__class_1_1RobotAPI_a816e5fae398db0b4338552ff72426556}\label{classRobotAPI__class_1_1RobotAPI_a816e5fae398db0b4338552ff72426556}} 
+int {\bfseries FC\+\_\+\+READ\+\_\+\+ANGLE} = 5
+\item 
+\mbox{\Hypertarget{classRobotAPI__class_1_1RobotAPI_a026af83da34d328ac546d94d84f76b62}\label{classRobotAPI__class_1_1RobotAPI_a026af83da34d328ac546d94d84f76b62}} 
+int {\bfseries FC\+\_\+\+WRITE\+\_\+\+ANGLE} = 6
+\item 
+\mbox{\Hypertarget{classRobotAPI__class_1_1RobotAPI_adab9c51b29bb270c6bebdacec9f2fff5}\label{classRobotAPI__class_1_1RobotAPI_adab9c51b29bb270c6bebdacec9f2fff5}} 
+int {\bfseries FC\+\_\+\+PEN\+\_\+\+SERVO} = 7
+\item 
+\mbox{\Hypertarget{classRobotAPI__class_1_1RobotAPI_a22ba8159c91d0195308c0d6b069a330b}\label{classRobotAPI__class_1_1RobotAPI_a22ba8159c91d0195308c0d6b069a330b}} 
+int {\bfseries FC\+\_\+\+READ\+\_\+\+STATE} = 8
+\item 
+\mbox{\Hypertarget{classRobotAPI__class_1_1RobotAPI_a55e03ee82f0e3177f0b74434651d58d9}\label{classRobotAPI__class_1_1RobotAPI_a55e03ee82f0e3177f0b74434651d58d9}} 
+int {\bfseries FC\+\_\+\+WRITE\+\_\+\+STATE} = 9
+\item 
+\mbox{\Hypertarget{classRobotAPI__class_1_1RobotAPI_a40c2ba29e53986e11efaaa01bed8c40a}\label{classRobotAPI__class_1_1RobotAPI_a40c2ba29e53986e11efaaa01bed8c40a}} 
+int {\bfseries FC\+\_\+\+READ\+\_\+\+ROBOT\+\_\+\+STATE} = 10
+\item 
+\mbox{\Hypertarget{classRobotAPI__class_1_1RobotAPI_a9c1e92ea4e654330530ed2a70a2f0647}\label{classRobotAPI__class_1_1RobotAPI_a9c1e92ea4e654330530ed2a70a2f0647}} 
+int {\bfseries FC\+\_\+\+WRITE\+\_\+\+ROBOT\+\_\+\+STATE} = 11
+\item 
+\mbox{\Hypertarget{classRobotAPI__class_1_1RobotAPI_ab67d87e12e35bf6f56447323f0c1b8d6}\label{classRobotAPI__class_1_1RobotAPI_ab67d87e12e35bf6f56447323f0c1b8d6}} 
+int {\bfseries FC\+\_\+\+RW\+\_\+\+ROBOT\+\_\+\+STATE} = 12
+\item 
+\mbox{\Hypertarget{classRobotAPI__class_1_1RobotAPI_ac7e7ae179c06d59a7ef17602b8a25eb6}\label{classRobotAPI__class_1_1RobotAPI_ac7e7ae179c06d59a7ef17602b8a25eb6}} 
+float {\bfseries RS485\+\_\+\+TO} = 0.\+2
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classRobotAPI__class_1_1RobotAPI_ae14604d933d67e5ad5759767f98cb546}\label{classRobotAPI__class_1_1RobotAPI_ae14604d933d67e5ad5759767f98cb546}} 
+\index{RobotAPI\_class.RobotAPI@{RobotAPI\_class.RobotAPI}!getJointAngle@{getJointAngle}}
+\index{getJointAngle@{getJointAngle}!RobotAPI\_class.RobotAPI@{RobotAPI\_class.RobotAPI}}
+\doxysubsubsection{\texorpdfstring{getJointAngle()}{getJointAngle()}}
+{\footnotesize\ttfamily def Robot\+API\+\_\+class.\+Robot\+API.\+get\+Joint\+Angle (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{int}]{motor\+ID,  }\item[{str }]{unit = {\ttfamily \char`\"{}rad\char`\"{}} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Description: This function reads the motor joint angle
+
+Input:
+motorID: The ID of the motor
+
+Output:
+joint angle
+-1 if failed to get the joint angle\end{DoxyVerb}
+ \mbox{\Hypertarget{classRobotAPI__class_1_1RobotAPI_a70fd3eee9c5515bd6d3cb966360115be}\label{classRobotAPI__class_1_1RobotAPI_a70fd3eee9c5515bd6d3cb966360115be}} 
+\index{RobotAPI\_class.RobotAPI@{RobotAPI\_class.RobotAPI}!getJointState@{getJointState}}
+\index{getJointState@{getJointState}!RobotAPI\_class.RobotAPI@{RobotAPI\_class.RobotAPI}}
+\doxysubsubsection{\texorpdfstring{getJointState()}{getJointState()}}
+{\footnotesize\ttfamily def Robot\+API\+\_\+class.\+Robot\+API.\+get\+Joint\+State (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{int}]{motor\+ID }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Description: This function reads the motor joint angle and joint velocity
+
+Input:
+motorID: The ID of the motor
+
+Output:
+[joint angle (rad), joint velocity (rad/s)]
+-1 if failed to get the state\end{DoxyVerb}
+ \mbox{\Hypertarget{classRobotAPI__class_1_1RobotAPI_a3eb828de8c4f5f02797bc613934fc77b}\label{classRobotAPI__class_1_1RobotAPI_a3eb828de8c4f5f02797bc613934fc77b}} 
+\index{RobotAPI\_class.RobotAPI@{RobotAPI\_class.RobotAPI}!getRobotState@{getRobotState}}
+\index{getRobotState@{getRobotState}!RobotAPI\_class.RobotAPI@{RobotAPI\_class.RobotAPI}}
+\doxysubsubsection{\texorpdfstring{getRobotState()}{getRobotState()}}
+{\footnotesize\ttfamily def Robot\+API\+\_\+class.\+Robot\+API.\+get\+Robot\+State (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Description: This function reads the robot joint angles and joint velocities.
+
+Input: -NA-
+
+Output:
+For 2R robot: JA1, JV1 corresponds to the base motor.
+For 5bar robot: JA1, JV1 corresponds to the left motor.
+[[JA1, JV1],[JA2, JV2]] units: rad for angle, rad/s for velocity
+-1 if failed to get the state\end{DoxyVerb}
+ \mbox{\Hypertarget{classRobotAPI__class_1_1RobotAPI_acb657644d77fb641c691457a0061b1e2}\label{classRobotAPI__class_1_1RobotAPI_acb657644d77fb641c691457a0061b1e2}} 
+\index{RobotAPI\_class.RobotAPI@{RobotAPI\_class.RobotAPI}!getTorqueStatus@{getTorqueStatus}}
+\index{getTorqueStatus@{getTorqueStatus}!RobotAPI\_class.RobotAPI@{RobotAPI\_class.RobotAPI}}
+\doxysubsubsection{\texorpdfstring{getTorqueStatus()}{getTorqueStatus()}}
+{\footnotesize\ttfamily def Robot\+API\+\_\+class.\+Robot\+API.\+get\+Torque\+Status (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{int}]{motor\+ID }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Description: This function checks the torque enabled/disabled status.
+
+Input:
+motorID: The ID of the motor to check the torque status
+
+Output:
+1 if the motor torque is enabled
+0 if the motor torque is disabled
+-1 if failed to get the torque status\end{DoxyVerb}
+ \mbox{\Hypertarget{classRobotAPI__class_1_1RobotAPI_a084b460226f2a4568d90f5916c42fe3b}\label{classRobotAPI__class_1_1RobotAPI_a084b460226f2a4568d90f5916c42fe3b}} 
+\index{RobotAPI\_class.RobotAPI@{RobotAPI\_class.RobotAPI}!goHome@{goHome}}
+\index{goHome@{goHome}!RobotAPI\_class.RobotAPI@{RobotAPI\_class.RobotAPI}}
+\doxysubsubsection{\texorpdfstring{goHome()}{goHome()}}
+{\footnotesize\ttfamily def Robot\+API\+\_\+class.\+Robot\+API.\+go\+Home (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Description:
+This function moves the robot to the home position.
+
+Input: -NA-
+Output: success/failure\end{DoxyVerb}
+ \mbox{\Hypertarget{classRobotAPI__class_1_1RobotAPI_a69fcb8c2a39f62a6e33f4af550df3e23}\label{classRobotAPI__class_1_1RobotAPI_a69fcb8c2a39f62a6e33f4af550df3e23}} 
+\index{RobotAPI\_class.RobotAPI@{RobotAPI\_class.RobotAPI}!penDown@{penDown}}
+\index{penDown@{penDown}!RobotAPI\_class.RobotAPI@{RobotAPI\_class.RobotAPI}}
+\doxysubsubsection{\texorpdfstring{penDown()}{penDown()}}
+{\footnotesize\ttfamily def Robot\+API\+\_\+class.\+Robot\+API.\+pen\+Down (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Description:
+Pen down
+
+Input: -NA-
+
+Output:
+No feedback available from the servo motor. Inspect visually.\end{DoxyVerb}
+ \mbox{\Hypertarget{classRobotAPI__class_1_1RobotAPI_a0202f23a9fd3c3bede1f40805c3f5108}\label{classRobotAPI__class_1_1RobotAPI_a0202f23a9fd3c3bede1f40805c3f5108}} 
+\index{RobotAPI\_class.RobotAPI@{RobotAPI\_class.RobotAPI}!penUp@{penUp}}
+\index{penUp@{penUp}!RobotAPI\_class.RobotAPI@{RobotAPI\_class.RobotAPI}}
+\doxysubsubsection{\texorpdfstring{penUp()}{penUp()}}
+{\footnotesize\ttfamily def Robot\+API\+\_\+class.\+Robot\+API.\+pen\+Up (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Description:
+Pen up (lifted in air)
+
+Input: -NA-
+
+Output:
+No feedback available from the servo motor. Inspect visually.\end{DoxyVerb}
+ \mbox{\Hypertarget{classRobotAPI__class_1_1RobotAPI_a2afefe6ed35cf63f8adf7f51c69038ba}\label{classRobotAPI__class_1_1RobotAPI_a2afefe6ed35cf63f8adf7f51c69038ba}} 
+\index{RobotAPI\_class.RobotAPI@{RobotAPI\_class.RobotAPI}!pingTest@{pingTest}}
+\index{pingTest@{pingTest}!RobotAPI\_class.RobotAPI@{RobotAPI\_class.RobotAPI}}
+\doxysubsubsection{\texorpdfstring{pingTest()}{pingTest()}}
+{\footnotesize\ttfamily def Robot\+API\+\_\+class.\+Robot\+API.\+ping\+Test (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{int}]{motor\+ID }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Description: This function sends a ping command
+to the specified motor and waits for a response.
+
+Input:
+motorID: The ID of the motor to ping
+
+Output:
+True if the motor responds to the ping command
+False if the motor does not respond to the ping command\end{DoxyVerb}
+ \mbox{\Hypertarget{classRobotAPI__class_1_1RobotAPI_a78f0e110318fa8c5758581f7ed93c172}\label{classRobotAPI__class_1_1RobotAPI_a78f0e110318fa8c5758581f7ed93c172}} 
+\index{RobotAPI\_class.RobotAPI@{RobotAPI\_class.RobotAPI}!setGetRobotState@{setGetRobotState}}
+\index{setGetRobotState@{setGetRobotState}!RobotAPI\_class.RobotAPI@{RobotAPI\_class.RobotAPI}}
+\doxysubsubsection{\texorpdfstring{setGetRobotState()}{setGetRobotState()}}
+{\footnotesize\ttfamily def Robot\+API\+\_\+class.\+Robot\+API.\+set\+Get\+Robot\+State (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{list}]{state }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Description:
+This function sets the robot joint angles and joint velocities synchronously.
+And then reads the instantaneous robot joint angles and joint velocities.
+
+Input:
+state: [[JA1, JV1],[JA2, JV2]] units: rad for angle, rad/s for velocity
+For 2R robot: JA1, JV1 corresponds to the base motor.
+For 5bar robot: JA1, JV1 corresponds to the left motor.
+
+Output:
+For 2R robot: JA1, JV1 corresponds to the base motor.
+For 5bar robot: JA1, JV1 corresponds to the left motor.
+[[JA1, JV1],[JA2, JV2]] units: rad for angle, rad/s for velocity
+-1 if failed to get the state\end{DoxyVerb}
+ \mbox{\Hypertarget{classRobotAPI__class_1_1RobotAPI_a978b74015757f7ea65b35be6ccd55790}\label{classRobotAPI__class_1_1RobotAPI_a978b74015757f7ea65b35be6ccd55790}} 
+\index{RobotAPI\_class.RobotAPI@{RobotAPI\_class.RobotAPI}!setJointAngle@{setJointAngle}}
+\index{setJointAngle@{setJointAngle}!RobotAPI\_class.RobotAPI@{RobotAPI\_class.RobotAPI}}
+\doxysubsubsection{\texorpdfstring{setJointAngle()}{setJointAngle()}}
+{\footnotesize\ttfamily def Robot\+API\+\_\+class.\+Robot\+API.\+set\+Joint\+Angle (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{int}]{motor\+ID,  }\item[{float}]{angle,  }\item[{str }]{unit = {\ttfamily \char`\"{}rad\char`\"{}} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Description:
+This function sets the motor joint angle.
+The motor torque is enabled automatically.
+
+Input:
+motorID: The ID of the motor
+
+Output:
+success/failure\end{DoxyVerb}
+ \mbox{\Hypertarget{classRobotAPI__class_1_1RobotAPI_a5cf25a94cb093c6c35052e04fd40e077}\label{classRobotAPI__class_1_1RobotAPI_a5cf25a94cb093c6c35052e04fd40e077}} 
+\index{RobotAPI\_class.RobotAPI@{RobotAPI\_class.RobotAPI}!setJointState@{setJointState}}
+\index{setJointState@{setJointState}!RobotAPI\_class.RobotAPI@{RobotAPI\_class.RobotAPI}}
+\doxysubsubsection{\texorpdfstring{setJointState()}{setJointState()}}
+{\footnotesize\ttfamily def Robot\+API\+\_\+class.\+Robot\+API.\+set\+Joint\+State (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{int}]{motor\+ID,  }\item[{list}]{state }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Description:
+This function sets the motor joint angle and joint velocity.
+The motor torque is enabled automatically.
+
+Input:
+motorID: The ID of the motor
+
+Output:
+success/failure\end{DoxyVerb}
+ \mbox{\Hypertarget{classRobotAPI__class_1_1RobotAPI_ae5831149fe7268cd8d76331b8d8c5703}\label{classRobotAPI__class_1_1RobotAPI_ae5831149fe7268cd8d76331b8d8c5703}} 
+\index{RobotAPI\_class.RobotAPI@{RobotAPI\_class.RobotAPI}!setRobotState@{setRobotState}}
+\index{setRobotState@{setRobotState}!RobotAPI\_class.RobotAPI@{RobotAPI\_class.RobotAPI}}
+\doxysubsubsection{\texorpdfstring{setRobotState()}{setRobotState()}}
+{\footnotesize\ttfamily def Robot\+API\+\_\+class.\+Robot\+API.\+set\+Robot\+State (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{list}]{state }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Description:
+This function sets the robot joint angles and joint velocities synchronously.
+The motor torques are enabled automatically.
+
+Input:
+state: [[JA1, JV1],[JA2, JV2]] units: rad for angle, rad/s for velocity
+
+Output:
+success/failure\end{DoxyVerb}
+ \mbox{\Hypertarget{classRobotAPI__class_1_1RobotAPI_ac2a1b706c2a722ad152424c67dc68a4e}\label{classRobotAPI__class_1_1RobotAPI_ac2a1b706c2a722ad152424c67dc68a4e}} 
+\index{RobotAPI\_class.RobotAPI@{RobotAPI\_class.RobotAPI}!setTorqueOFF@{setTorqueOFF}}
+\index{setTorqueOFF@{setTorqueOFF}!RobotAPI\_class.RobotAPI@{RobotAPI\_class.RobotAPI}}
+\doxysubsubsection{\texorpdfstring{setTorqueOFF()}{setTorqueOFF()}}
+{\footnotesize\ttfamily def Robot\+API\+\_\+class.\+Robot\+API.\+set\+Torque\+OFF (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{int}]{motor\+ID }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Description: This function disables the motor control
+of the specified motor and waits for a response.
+
+Input:
+motorID: The ID of the motor to disable torque
+
+Output:
+True if the torque is disabled
+False if failed to disable the torque\end{DoxyVerb}
+ \mbox{\Hypertarget{classRobotAPI__class_1_1RobotAPI_ad4faa5bbe5948edcfeb947cf11ad3f9a}\label{classRobotAPI__class_1_1RobotAPI_ad4faa5bbe5948edcfeb947cf11ad3f9a}} 
+\index{RobotAPI\_class.RobotAPI@{RobotAPI\_class.RobotAPI}!setTorqueON@{setTorqueON}}
+\index{setTorqueON@{setTorqueON}!RobotAPI\_class.RobotAPI@{RobotAPI\_class.RobotAPI}}
+\doxysubsubsection{\texorpdfstring{setTorqueON()}{setTorqueON()}}
+{\footnotesize\ttfamily def Robot\+API\+\_\+class.\+Robot\+API.\+set\+Torque\+ON (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{int}]{motor\+ID }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Description: This function enables the motor control
+of the specified motor and waits for a response.
+
+Input:
+motorID: The ID of the motor to enable torque
+
+Output:
+True if the torque is enabled
+False if failed to enabled the torque\end{DoxyVerb}
+ 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Robot\+API\+\_\+class.\+py\end{DoxyCompactItemize}
