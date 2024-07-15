@@ -17,6 +17,8 @@ ELBOW_MOTOR = 2
 
 my2R = RobotAPI(DEVICENAME, BAUDRATE, ROBOT)
 
+my2R.goHome()
+sleep(2)
 my2R.setJointAngle(ELBOW_MOTOR, 10, "deg")
 sleep(1)
 my2R.penDown()
