@@ -7,6 +7,9 @@ Python libraries needed:
 pip install pySerialTransfer
 ```
 
+
+ME381 Students need not worry about the following.
+
 Arduino libraries needed:
 1. SerialTransfer
 2. DynamixelShield
