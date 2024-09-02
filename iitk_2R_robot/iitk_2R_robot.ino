@@ -151,12 +151,12 @@ void setup() {
     DEBUG_SERIAL.println(write_feedback);
     delay(10);
 
-    write_feedback = dxl.writeControlTableItem(ControlTableItem::CW_COMPLIANCE_SLOPE, motor_id, 16);
+    write_feedback = dxl.writeControlTableItem(ControlTableItem::CW_COMPLIANCE_SLOPE, motor_id, 64);
     DEBUG_SERIAL.print("CW Compliance Slope set (1 for success): ");
     DEBUG_SERIAL.println(write_feedback);
     delay(10);
 
-    write_feedback = dxl.writeControlTableItem(ControlTableItem::CCW_COMPLIANCE_SLOPE, motor_id, 16);
+    write_feedback = dxl.writeControlTableItem(ControlTableItem::CCW_COMPLIANCE_SLOPE, motor_id, 64);
     DEBUG_SERIAL.print("CCW Compliance Slope set (1 for success): ");
     DEBUG_SERIAL.println(write_feedback);
     delay(10);
