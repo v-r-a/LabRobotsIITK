@@ -6,7 +6,8 @@ Python libraries needed:
 ```
 pip install pySerialTransfer
 ```
-
+Other:
+NumPy, and keyboard
 
 ME381 Students need not worry about the following.
 
