@@ -85,7 +85,7 @@ while op == False:
 e1 = 100
 e2 = 100
 # Wait until the robot reaches the pose
-while (abs(e1) + abs(e2)) > 0.05:
+while (abs(e1) + abs(e2)) > tol:
     ja1 = my2R.getJointAngle(BASE_MOTOR)
     sleep(0.05)
     ja2 = my2R.getJointAngle(ELBOW_MOTOR)
@@ -116,7 +116,7 @@ while op == False:
 e1 = 100
 e2 = 100
 # Wait until the robot reaches the pose
-while (abs(e1) + abs(e2)) > 0.05:
+while (abs(e1) + abs(e2)) > tol:
     ja1 = my2R.getJointAngle(BASE_MOTOR)
     sleep(0.05)
     ja2 = my2R.getJointAngle(ELBOW_MOTOR)
