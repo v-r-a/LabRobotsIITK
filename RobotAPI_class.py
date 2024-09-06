@@ -27,6 +27,7 @@ class RobotAPI:
     # Other
     RS485_TO = 0.2
 
+    # The constructor
     def __init__(self, port: str, baud_rate: int, robot_type: str):
         self.link = txfer.SerialTransfer(port, baud_rate)
         # Open the serial port, and if it fails, print an error message
@@ -37,6 +38,7 @@ class RobotAPI:
         sleep(0.1)
         self.rob = robot_type
 
+    # The destructor
     def __del__(self):
         self.link.close()
 
@@ -574,6 +576,7 @@ class RobotAPI:
 
         Input:
         motorID: The ID of the motor
+        unit: optional input. Default is 'rad'. Use 'deg' for degrees.
 
         Output:
         joint angle
@@ -671,6 +674,8 @@ class RobotAPI:
 
         Input:
         motorID: The ID of the motor
+        angle: The angle
+        unit: optional input. Default is 'rad'. Use 'deg' for degrees.
 
         Output:
         success/failure
@@ -1086,6 +1091,7 @@ class RobotAPI:
 
         Input:
         motorID: The ID of the motor
+        state: [joint angle (rad), joint velocity (rad/s)]
 
         Output:
         success/failure
@@ -1378,6 +1384,7 @@ class RobotAPI:
         This function moves the robot to the home position.
 
         Input: -NA-
+        
         Output: success/failure
         
         """

@@ -107,6 +107,7 @@ float {\bfseries RS485\+\_\+\+TO} = 0.\+2
 
 Input:
 motorID: The ID of the motor
+unit: optional input. Default is 'rad'. Use 'deg' for degrees.
 
 Output:
 joint angle
@@ -165,6 +166,7 @@ Output:
 This function moves the robot to the home position.
 
 Input: -NA-
+
 Output: success/failure\end{DoxyVerb}
  \mbox{\Hypertarget{classRobotAPI__class_1_1RobotAPI_a69fcb8c2a39f62a6e33f4af550df3e23}\label{classRobotAPI__class_1_1RobotAPI_a69fcb8c2a39f62a6e33f4af550df3e23}} 
 \index{RobotAPI\_class.RobotAPI@{RobotAPI\_class.RobotAPI}!penDown@{penDown}}
@@ -239,6 +241,8 @@ The motor torque is enabled automatically.
 
 Input:
 motorID: The ID of the motor
+angle: The angle
+unit: optional input. Default is 'rad'. Use 'deg' for degrees.
 
 Output:
 success/failure\end{DoxyVerb}
@@ -254,6 +258,7 @@ The motor torque is enabled automatically.
 
 Input:
 motorID: The ID of the motor
+state: [joint angle (rad), joint velocity (rad/s)]
 
 Output:
 success/failure\end{DoxyVerb}
