@@ -27,7 +27,7 @@ tol = 0.1
 
 # Go to the home position
 my2R.goHome()
-print("Wait... the robot is homing")
+print("Wait for the robot to complete homing...")
 sleep(5)
 
 # Turn off the motor torques to allow manual movement
@@ -41,35 +41,51 @@ if op1 and op2:
     print("The robot is free to move!")
 else:
     print("Stop and Re-run the program. Not able to turn off either of the motor torques.")
-    print("Press the RESET button on Arduino MEGA")
+    print("Press the RESET button on Arduino Mega")
 
 #--------------------------------------------------------------------------------
 # Record the position 1
-print("Move the robot to the first desired location and then press 'R'")
-key = keyboard.read_key()
-if key.lower() == 'r':
-    pose1[0] = my2R.getJointAngle(BASE_MOTOR)
-    pose1[1] = my2R.getJointAngle(ELBOW_MOTOR)
-    print("Recorded the pose. If you see Err: Timeout, stop and re-run the program.")
-    my2R.penDown()
-    sleep(0.5)
-    my2R.penUp()
-    print(pose1)
+print("Move the robot gently to the first desired location and then press 'r'")
+while True:
+    key = keyboard.read_key()
+    if key.lower() == 'r':
+        pose1[0] = my2R.getJointAngle(BASE_MOTOR)
+        pose1[1] = my2R.getJointAngle(ELBOW_MOTOR)
+        print("Stop and re-run the program if you see Err: Timeout.")
+        sleep(0.5)
+        my2R.penDown()
+        sleep(0.5)
+        my2R.penUp()
+        print("Recorded the joint angles:", pose1)
+        break  # Exit the loop after pressing 'r'
+    else:
+        print("You did not press 'r'. Press 'r'")
+        sleep(0.5)  # Add a small delay to avoid excessive CPU usage
+
+
 
 # Record the position 2
-print("Move the robot to the second desired location and then press 'R'")
-key = keyboard.read_key()
-if key.lower() == 'r':
-    pose2[0] = my2R.getJointAngle(BASE_MOTOR)
-    pose2[1] = my2R.getJointAngle(ELBOW_MOTOR)
-    print("Recorded the pose. If you see Err: Timeout, stop and re-run the program.")
-    my2R.penDown()
-    sleep(0.5)
-    my2R.penUp()
-    print(pose2)
+print("Move the robot gently to the second desired location and then press 'r'")
+while True:
+    key = keyboard.read_key()
+    if key.lower() == 'r':
+        pose2[0] = my2R.getJointAngle(BASE_MOTOR)
+        pose2[1] = my2R.getJointAngle(ELBOW_MOTOR)
+        print("Stop and re-run the program if you see Err: Timeout.")
+        sleep(0.5)
+        my2R.penDown()
+        sleep(0.5)
+        my2R.penUp()
+        print("Recorded the joint angles:", pose2)
+        break  # Exit the loop after pressing 'r'
+    else:
+        print("You did not press 'r'. Press 'r'")
+        sleep(0.5)  # Add a small delay to avoid excessive CPU usage
+
 #--------------------------------------------------------------------------------
 # Start moving
-print("Positions recorded. Press 'Enter' and move aside!!!")
+print("Two robot positions recorded.")
+print("Press 'Enter' and move aside!!!")
 key = keyboard.read_key()
 sleep(1)
 print("Moving to the first position...")
@@ -92,11 +108,12 @@ while (abs(e1) + abs(e2)) > tol:
     sleep(0.05)
     e1 = pose1[0] - ja1
     e2 = pose1[1] - ja2
-    print(f"joint angle errors: {e1:.3f}, {e2:.3f}")
+    # print(f"joint angle errors: {e1:.3f}, {e2:.3f}")
     my2R.setRobotState([[pose1[0], spd], [pose1[1], spd]])
     sleep(0.2)
 
 # Mark
+print("Achieved joint angles:",[ja1,ja2])
 sleep(0.5)
 my2R.penDown()
 sleep(0.5)
@@ -123,11 +140,12 @@ while (abs(e1) + abs(e2)) > tol:
     sleep(0.05)
     e1 = pose2[0] - ja1
     e2 = pose2[1] - ja2
-    print(f"joint angle errors: {e1:.3f}, {e2:.3f}")
+    # print(f"joint angle errors: {e1:.3f}, {e2:.3f}")
     my2R.setRobotState([[pose2[0], spd], [pose2[1], spd]])
     sleep(0.2)
 
 # Mark
+print("Achieved joint angles:",[ja1,ja2])
 sleep(0.5)
 my2R.penDown()
 sleep(0.5)

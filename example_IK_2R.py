@@ -46,8 +46,8 @@ tol = 4
 sol = IK_2R(l1,l2,x,y,0,1,"rad","deg")
 
 # Print the solution with three decimal places
-print("Solution 1: ", np.round(sol[0], 3))
-print("Solution 2: ", np.round(sol[1], 3))
+print("Solution 1 (unit: deg): ", np.round(sol[0], 3))
+print("Solution 2: (unit: deg)", np.round(sol[1], 3))
 
 # Move the robot to the first solution
 print("Moving towards the first solution...")
@@ -71,6 +71,7 @@ while (abs(e1) + abs(e2)) > tol:
     sleep(0.2)
 
 # Mark
+print("Achieved joint angles (deg):",[ja1,ja2])
 sleep(1)
 my2R.penDown()
 sleep(0.5)
@@ -99,6 +100,7 @@ while (abs(e1) + abs(e2)) > tol:
     sleep(0.2)
 
 # Mark
+print("Achieved joint angles (deg):",[ja1,ja2])
 sleep(1)
 my2R.penDown()
 sleep(0.5)
