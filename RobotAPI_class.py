@@ -72,9 +72,9 @@ class RobotAPI:
 
         try:
             # Load the Tx buffer with the packet
-            send_size = self.self.link.tx_obj(my_array)
+            send_size = self.link.tx_obj(my_array)
             # Send the packet
-            self.self.link.send(send_size)
+            self.link.send(send_size)
             # Wait for the packet to be sent
             sleep(0.001)
             # Record the time the packet was sent
@@ -82,7 +82,7 @@ class RobotAPI:
 
             # Wait for a response
             data_recieved = True
-            while not self.self.link.available():
+            while not self.link.available():
                 if self.link.status < 0:
                     if self.link.status == txfer.CRC_ERROR:
                         print("ERROR: CRC_ERROR")
@@ -103,7 +103,7 @@ class RobotAPI:
             if data_recieved:
                 # print(f"ByteRead: {link.bytesRead}")
                 # Process the response if needed
-                response = self.self.link.rx_obj(
+                response = self.link.rx_obj(
                     obj_type=list, obj_byte_size=self.link.bytesRead, list_format="i"
                 )
                 from_addr = response[0]
@@ -159,7 +159,7 @@ class RobotAPI:
 
         try:
             # Load the Tx buffer with the packet
-            send_size = self.self.link.tx_obj(my_array)
+            send_size = self.link.tx_obj(my_array)
             # Send the packet
             self.link.send(send_size)
             # Wait for the packet to be sent
