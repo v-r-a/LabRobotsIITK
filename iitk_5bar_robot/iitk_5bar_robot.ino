@@ -83,7 +83,8 @@ const uint8_t NMOTOR = 2;
 const uint8_t MOTOR_ID_LIST[NMOTOR] = { 1, 2 };
 
 // Homing position and return to home velocity
-uint16_t home_pos_list[NMOTOR] = { 512 - 153, 512 + 153 };
+//uint16_t home_pos_list[NMOTOR] = { 512 - 153, 512 + 153 };
+uint16_t home_pos_list[NMOTOR] = { 512 , 512 };
 uint16_t home_vel_list[NMOTOR] = { 50, 50 };
 
 /***********************************************************************************************/
@@ -151,12 +152,12 @@ void setup() {
     DEBUG_SERIAL.println(write_feedback);
     delay(10);
 
-    write_feedback = dxl.writeControlTableItem(ControlTableItem::CW_COMPLIANCE_SLOPE, motor_id, 16);
+    write_feedback = dxl.writeControlTableItem(ControlTableItem::CW_COMPLIANCE_SLOPE, motor_id, 32);
     DEBUG_SERIAL.print("CW Compliance Slope set (1 for success): ");
     DEBUG_SERIAL.println(write_feedback);
     delay(10);
 
-    write_feedback = dxl.writeControlTableItem(ControlTableItem::CCW_COMPLIANCE_SLOPE, motor_id, 16);
+    write_feedback = dxl.writeControlTableItem(ControlTableItem::CCW_COMPLIANCE_SLOPE, motor_id, 32);
     DEBUG_SERIAL.print("CCW Compliance Slope set (1 for success): ");
     DEBUG_SERIAL.println(write_feedback);
     delay(10);
@@ -455,7 +456,7 @@ void loop() {
         dataOut[2] = 0;             // FC1
         dataOut[3] = FC_PEN_SERVO;  // FC2
         // Send command to the servo
-        myservo.write(dataIn[0]);  // 30 degrees for pen down
+        myservo.write(dataIn[0]);  // 90 degrees for pen down
         dataOut[4] = 1;            // useless. no feedback available
         ptr = 5 * sizeof(long);
         memcpy(packetOut, dataOut, ptr);
