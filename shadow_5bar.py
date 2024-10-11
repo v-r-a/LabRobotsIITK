@@ -36,7 +36,7 @@ while op == False:
 sleep(1)
 
 # MuJoCo model and simulation data initialisation
-m = mujoco.MjModel.from_xml_path('os.getcwd()+'\\5bar.xml')
+m = mujoco.MjModel.from_xml_path(os.getcwd()+'\\5bar.xml')
 d = mujoco.MjData(m)
 
 # Keyboard callback
