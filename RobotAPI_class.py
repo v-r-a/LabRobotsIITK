@@ -25,7 +25,7 @@ class RobotAPI:
     FC_WRITE_ROBOT_STATE = 11
     FC_RW_ROBOT_STATE = 12
     # Other
-    RS485_TO = 0.2
+    RS485_TO = 0.01
 
     # The constructor
     def __init__(self, port: str, baud_rate: int, robot_type: str):
@@ -436,7 +436,8 @@ class RobotAPI:
 
         # left motor ID = 1, right motor ID = 2.
         # home at 45 degrees away from the centre position for both the motors
-        home_5bar = [512 - 153, 512 + 153]
+        # home_5bar = [512 - 153, 512 + 153]
+        home_5bar = [512, 512]
         # left motor ID 1 limits: + 45 degrees and -90 degrees
         # right motor ID 2 limits: + 90 degrees and -45 degrees
         limits_5bar = [[512 - 307, 512 + 153], [512 - 153, 512 + 307]]
@@ -524,7 +525,8 @@ class RobotAPI:
 
         # left motor ID = 1, right motor ID = 2.
         # home at 45 degrees away from the centre position for both the motors
-        home_5bar = [512 - 153, 512 + 153]
+        # home_5bar = [512 - 153, 512 + 153]
+        home_5bar = [512 , 512]
         # left motor ID 1 limits: + 45 degrees and -90 degrees
         # right motor ID 2 limits: + 90 degrees and -45 degrees
         limits_5bar = [[512 - 307, 512 + 153], [512 - 153, 512 + 307]]
@@ -759,12 +761,12 @@ class RobotAPI:
 
         return -1
 
-    def penDown(self):
+    def penDown(self, angle = 30):
         """
         Description:
         Pen down
 
-        Input: -NA-
+        Input: angle in degrees: 30-Deg for 2R, 90-Deg for 5-bar
 
         Output:
         No feedback available from the servo motor. Inspect visually.
@@ -776,7 +778,7 @@ class RobotAPI:
         to_addr = self.ADDR_MEGA
         FC1 = self.FC_PEN_SERVO
         FC2 = 0
-        data = 30  # pen down => move servo to 30 degrees
+        data = angle  # pen down => move servo to 30 degrees
         # Packet
         my_array = list()
         my_array.append(from_addr)
@@ -1391,8 +1393,11 @@ class RobotAPI:
         if self.rob == "2R":
             home_state = [[0, 0.5], [0, 0.5]]
         elif self.rob == "5bar":
-            home_state = [[3 * math.pi / 4, 0.5], [math.pi / 4, 0.5]]
-        
+            home_state = [[0, 0.5], [0, 0.5]]
+            # home_state = [[3 * math.pi / 4, 0.5], [math.pi / 4, 0.5]]
+        else:
+            home_state = [[0, 0.5], [0, 0.5]]
+
         self.penUp()
         sleep(0.5)
         ack = self.setRobotState(home_state)

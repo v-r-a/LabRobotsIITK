@@ -85,6 +85,44 @@ def IK_2R(l1:float, l2:float, x:float, y:float, th1_est:float = 0, th2_est:float
 
     # Cubic time trajectory-----------------------------------------
 
+# Define the inverse kinematics function for 5-bar robot
+def IK_5bar(robot_dim:list, x:float, y:float, unit_op:str = "rad"):
+    """
+    @brief Calculate the inverse kinematic solution of a 5-bar robot
+    @param robot_dim: [l_b,l_d,r_b,r_d,d] l_b: left base link, left distal link, right base link, right distal link, distance between motors
+    @param x: x coordinate of the end effector in m
+    @param y: y coordinate of the end effector in m
+    @param unit_ip: unit of the th1_est and th2_est angles, "rad" or "deg", default = "rad"
+    @param unit_op: unit of the output angles, "rad" or "deg", default = "rad"
+
+    @return: [theta1, theta2] for the motors to run. These valyes are offset by 90deg the general convention
+
+    """
+    # Check robot architecture parameters, i.e., link lengths.
+    if(len(robot_dim) == 5):
+        [l_b, l_d, r_b, r_d, d] = robot_dim
+    else:
+        print("Incorrect robot_dim input. Five lengths needed. Check the function documentation")
+        return -1
+
+    # Perform inverse kinematics on the left 2R
+    x_l, y_l = np.array([x, y]) + np.array([0, -d / 2])
+    # print(x_l,y_l)
+    th1est=0   # doesn't matter
+    th2est=-1 # left elbow out
+    sol_left = IK_2R(l_b,l_d,x_l,y_l,th1est,th2est,'rad',unit_op)
+    # print(sol_left)
+    # Perform inverse kinematics on the right 2R
+    x_r, y_r = np.array([x, y]) + np.array([0, d / 2])
+    # print(x_r,y_r)
+    th1est=0  # doesn't matter
+    th2est=1  # elbow angle sign opposite of the left 2R
+    sol_right = IK_2R(r_b,r_d,x_r,y_r,th1est,th2est,'rad',unit_op)
+    # print(sol_right)
+    # Choose the first branch of theta 1s
+    sol_5bar = [sol_left[0][0],sol_right[0][0]]
+    return  sol_5bar
+
 def cubic_time_traj(t:float, t1:float, t2:float, u1:float, u2:float, du1:float, du2:float):
     """
     @brief: Fits cubic u(t) = a0 + a1*t + a2*t^2 + a3*t^3
@@ -113,5 +151,65 @@ def cubic_time_traj(t:float, t1:float, t2:float, u1:float, u2:float, du1:float, 
     sol = np.linalg.solve(Amat, Bmat) # Pending: error handling of singularity
     tvec = np.array([1,t,t**2,t**3])
     return np.dot(sol,tvec)
+
+#---------------------------------------------------------------
+
+
+# Cartesian trajectory functions---------------------------------
+
+
+def lemniscate(cenXY: list, a: float, b: float, t: float):
+    """
+    @brief Gives out a point (X,Y) on a lemniscate as a function of parameter t
+    @param cenXY: [X, Y], the center of the lemniscate
+    @param a: horizontal scaling factor
+    @param b: vertical scaling factor
+    @param t: parameter that traces the lemniscate, typically varies between -pi/2 to pi/2 for one loop
+
+    @return: [x, y], a point on the lemniscate corresponding to the parameter 't'
+    """
+    denom = np.sin(t)**2 + 1
+    x = a * np.cos(t) / denom
+    y = b * np.sin(t) * np.cos(t) / denom
+    return [cenXY[0] + x, cenXY[1] + y]
+
+
+# Ellipse
+def ellipse(cenXY: list, a: float, b: float, th: float):
+    """
+    @brief Gives out a point (X,Y) on ellipse as a function of parameter theta
+    @param cenXY = [X,Y]
+    @param a: length of the sem-major axis
+    @param b: length of the semi-minor axis
+    @param th: varying this parameter from 0 to 2pi traces an ellipse
+
+    @return: [x,y], a point on ellipse corresponding to the parameter 'th'
+    """
+    return [cenXY[0] + a * np.cos(th), cenXY[1] + b * np.sin(th)]
+
+
+# Straight line
+def line_segment(x1y1: list, x2y2: list, u: float):
+    """
+    @brief: Gives out a point (X,Y) on the line segment a function of parameter 'u'
+    @param x1y1: [x1,y1]
+    @param x2y2: [x2,y2]
+    @param u: varying this parameter from 0 to 1 traces the line segment
+
+    @return: [x,y], a point on the line segment corresponding to the parameter 'u'
+    """
+    # extrapolation warning
+    if u > 1:
+        print("Warning: u > 1, extrapolated point.")
+    if u < 0:
+        print("Warning: u < 0, extrapolated point.")
+    # calculation
+    x1 = x1y1[0]
+    y1 = x1y1[1]
+    x2 = x2y2[0]
+    y2 = x2y2[1]
+    x = u * x2 + (1 - u) * x1
+    y = u * y2 + (1 - u) * y1
+    return [x, y]
 
 #---------------------------------------------------------------
