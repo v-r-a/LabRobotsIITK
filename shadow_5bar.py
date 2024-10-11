@@ -4,6 +4,7 @@ from time import sleep
 import mujoco
 import mujoco.viewer
 import numpy as np
+import os
 
 BAUDRATE = 1000000  # PC-Arduino communication rate
 DEVICENAME = "COM9"  # COM port number may vary
@@ -35,7 +36,7 @@ while op == False:
 sleep(1)
 
 # MuJoCo model and simulation data initialisation
-m = mujoco.MjModel.from_xml_path('C:\\Users\\Vyankatesh\\Desktop\\ME381\\exp_2R_serial\\LabRobotsIITK-main\\5bar.xml')
+m = mujoco.MjModel.from_xml_path('os.getcwd()+'\\5bar.xml')
 d = mujoco.MjData(m)
 
 # Keyboard callback
