@@ -42,7 +42,6 @@ d = mujoco.MjData(m)
 # Keyboard callback
 pendown = False
 draw_sph = False
-print_Pxy = False
 
 def keyboard_func(keycode):
     if chr(keycode) == ' ':
@@ -51,10 +50,7 @@ def keyboard_func(keycode):
     elif chr(keycode) == '1':
         global draw_sph
         draw_sph = not draw_sph
-    elif chr(keycode) == 'z':
-        global print_Pxy
-        print_Pxy = not print_Pxy
-
+        
 
 # Global variables for control
 th1 = 0
@@ -89,10 +85,6 @@ with mujoco.viewer.launch_passive(m, d, key_callback=keyboard_func) as viewer:
         while (d.time - simstart) < 1/60:
             mujoco.mj_step(m, d)
 
-        # Print the end-effector position
-        if print_Pxy:
-            with viewer.lock():
-                print("X-Y: ",d.site_xpos[0][0],d.site_xpos[0][1])
 
         # Pen up/down action
         if pendown:
