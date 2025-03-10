@@ -11,7 +11,7 @@ from time import sleep
 import keyboard
 
 BAUDRATE = 1000000 # PC-Arduino communication rate
-DEVICENAME = "COM9" # COM port number may vary
+DEVICENAME = ("COM4") # COM port number may vary
 ROBOT = "2R" # Robot name (used in some functions)
 BASE_MOTOR = 1 # Predefined ID of the base motor
 ELBOW_MOTOR = 2 # Predefined ID of the elbow motor
@@ -31,10 +31,19 @@ print("Wait for the robot to complete homing...")
 sleep(5)
 
 # Turn off the motor torques to allow manual movement
-op1 = my2R.setTorqueOFF(BASE_MOTOR)
-sleep(0.1)
-op2 = my2R.setTorqueOFF(ELBOW_MOTOR)
-sleep(0.1)
+op1 = False
+op2 = False
+i=0
+
+while not (op1 and op2):
+    op1 = my2R.setTorqueOFF(BASE_MOTOR)
+    sleep(0.2)
+    op2 = my2R.setTorqueOFF(ELBOW_MOTOR)
+    sleep(0.2)
+    i +=1
+    if i > 5:
+        break
+
 # Notify the user
 if op1 and op2:
     print("The motor torques have been turned off successfully.")
@@ -49,8 +58,21 @@ print("Move the robot gently to the first desired location and then press 'r'")
 while True:
     key = keyboard.read_key()
     if key.lower() == 'r':
-        pose1[0] = my2R.getJointAngle(BASE_MOTOR)
-        pose1[1] = my2R.getJointAngle(ELBOW_MOTOR)
+        chk = -1
+        i=0
+        while (chk == -1):
+            pose1[0] = my2R.getJointAngle(BASE_MOTOR)
+            if pose1[0] == -1:
+                chk = -1
+            sleep(0.1)
+            pose1[1] = my2R.getJointAngle(ELBOW_MOTOR)
+            if pose1[1] == -1:
+                chk = -1
+            sleep(0.1)
+            i +=1
+            if i>5:
+                break
+
         print("Stop and re-run the program if you see Err: Timeout.")
         sleep(0.5)
         my2R.penDown()
@@ -69,8 +91,21 @@ print("Move the robot gently to the second desired location and then press 'r'")
 while True:
     key = keyboard.read_key()
     if key.lower() == 'r':
-        pose2[0] = my2R.getJointAngle(BASE_MOTOR)
-        pose2[1] = my2R.getJointAngle(ELBOW_MOTOR)
+        chk = -1
+        i=0
+        while chk== -1:
+            pose2[0] = my2R.getJointAngle(BASE_MOTOR)
+            sleep(0.1)
+            if pose2[0] == -1:
+                chk = -1
+            pose2[1] = my2R.getJointAngle(ELBOW_MOTOR)
+            sleep(0.1)
+            if pose2[1] == -1:
+                chk =-1
+            i +=1
+            if i>5:
+                break
+
         print("Stop and re-run the program if you see Err: Timeout.")
         sleep(0.5)
         my2R.penDown()
@@ -154,6 +189,14 @@ sleep(1)
 
 # Finish
 print("OK done. Homing now...")
-my2R.goHome()
+op=False
+i=0
+while not op:
+    op=my2R.goHome()
+    sleep(0.1)
+    i+=1
+    if i>5:
+        break
+
 sleep(5)
 print("End")
