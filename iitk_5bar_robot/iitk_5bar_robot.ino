@@ -457,6 +457,7 @@ void loop() {
         dataOut[3] = FC_PEN_SERVO;  // FC2
         // Send command to the servo
         myservo.write(dataIn[0]);  // 90 degrees for pen down
+        delay(50);
         dataOut[4] = 1;            // useless. no feedback available
         ptr = 5 * sizeof(long);
         memcpy(packetOut, dataOut, ptr);
