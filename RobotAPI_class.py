@@ -25,22 +25,29 @@ class RobotAPI:
     FC_WRITE_ROBOT_STATE = 11
     FC_RW_ROBOT_STATE = 12
     # Other
-    RS485_TO = 0.01
+    RS485_TO = 0.1
 
     # The constructor
-    def __init__(self, port: str, baud_rate: int, robot_type: str):
-        self.link = txfer.SerialTransfer(port, baud_rate)
-        # Open the serial port, and if it fails, print an error message
-        if self.link.open():
-            print("Serial port opened successfully.")
-        else:
-            print("Failed to open serial port.")
-        sleep(0.1)
+    def __init__(self, port: str, baud_rate: int, robot_type: str, RS485_timeout: float=0.1):
+        try:
+            self.link = txfer.SerialTransfer(port, baud_rate)
+            if self.link.open():
+                print("Serial port opened successfully.")
+            else:
+                print("Failed to open serial port.")
+        except Exception as e:
+            print(f"Error opening serial port: {e}")
+            self.link = None
         self.rob = robot_type
 
     # The destructor
     def __del__(self):
-        self.link.close()
+        if hasattr(self, 'link') and self.link is not None:
+            try:
+                self.link.close()
+                print("Serial port closed successfully.")
+            except Exception as e:
+                print(f"Error closing serial port: {e}")
 
     def pingTest(self, motorID: int):
         """
@@ -63,16 +70,11 @@ class RobotAPI:
         FC2 = 0
         data = motorID
         # Packet
-        my_array = list()
-        my_array.append(from_addr)
-        my_array.append(to_addr)
-        my_array.append(FC1)
-        my_array.append(FC2)
-        my_array.append(data)
+        send_array = [from_addr, to_addr, FC1, FC2, data]
 
         try:
             # Load the Tx buffer with the packet
-            send_size = self.link.tx_obj(my_array)
+            send_size = self.link.tx_obj(send_array)
             # Send the packet
             self.link.send(send_size)
             # Wait for the packet to be sent
@@ -80,29 +82,15 @@ class RobotAPI:
             # Record the time the packet was sent
             send_time = time.time()
 
-            # Wait for a response
-            data_recieved = True
+            # Wait for response with timeout
             while not self.link.available():
-                if self.link.status < 0:
-                    if self.link.status == txfer.CRC_ERROR:
-                        print("ERROR: CRC_ERROR")
-                    elif self.link.status == txfer.PAYLOAD_ERROR:
-                        print("ERROR: PAYLOAD_ERROR")
-                    elif self.link.status == txfer.STOP_BYTE_ERROR:
-                        print("ERROR: STOP_BYTE_ERROR")
-                    else:
-                        print("ERROR: {}".format(self.link.status))
+                if (time.time() - send_time) > self.RS485_TO:
+                    print("Timeout waiting for response")
                     return False
                 sleep(0.001)
-                # Check for time out
-                if (time.time() - send_time) > self.RS485_TO:
-                    print("Err: Time out")
-                    data_recieved = False
-                    return False
 
-            if data_recieved:
-                # print(f"ByteRead: {link.bytesRead}")
-                # Process the response if needed
+            # Process response
+            if self.link.status == txfer.NEW_DATA:
                 response = self.link.rx_obj(
                     obj_type=list, obj_byte_size=self.link.bytesRead, list_format="i"
                 )
@@ -122,12 +110,13 @@ class RobotAPI:
                         f"Error: Invalid response from {from_addr} to {to_addr} with FC1={FC1} and FC2={FC2}"
                     )
                     return False
+            else:
+                print("Data receipt error. Status:", self.link.status)
+                return False
 
         except Exception as e:
             print("Error:", e)
             return False
-
-        return False
 
     def setTorqueON(self, motorID: int):
         """
@@ -150,16 +139,11 @@ class RobotAPI:
         FC2 = 0
         data = motorID
         # Packet
-        my_array = list()
-        my_array.append(from_addr)
-        my_array.append(to_addr)
-        my_array.append(FC1)
-        my_array.append(FC2)
-        my_array.append(data)
+        send_array = [from_addr, to_addr, FC1, FC2, data]
 
         try:
             # Load the Tx buffer with the packet
-            send_size = self.link.tx_obj(my_array)
+            send_size = self.link.tx_obj(send_array)
             # Send the packet
             self.link.send(send_size)
             # Wait for the packet to be sent
@@ -167,29 +151,15 @@ class RobotAPI:
             # Record the time the packet was sent
             send_time = time.time()
 
-            # Wait for a response
-            data_recieved = True
+            # Wait for response with timeout
             while not self.link.available():
-                if self.link.status < 0:
-                    if self.link.status == txfer.CRC_ERROR:
-                        print("ERROR: CRC_ERROR")
-                    elif self.link.status == txfer.PAYLOAD_ERROR:
-                        print("ERROR: PAYLOAD_ERROR")
-                    elif self.link.status == txfer.STOP_BYTE_ERROR:
-                        print("ERROR: STOP_BYTE_ERROR")
-                    else:
-                        print("ERROR: {}".format(self.link.status))
+                if (time.time() - send_time) > self.RS485_TO:
+                    print("Timeout waiting for response")
                     return False
                 sleep(0.001)
-                # Check for time out
-                if (time.time() - send_time) > self.RS485_TO:
-                    print("Err: Time out")
-                    data_recieved = False
-                    return False
 
-            if data_recieved:
-                # print(f"ByteRead: {link.bytesRead}")
-                # Process the response if needed
+            # Process response
+            if self.link.status == txfer.NEW_DATA:
                 response = self.link.rx_obj(
                     obj_type=list, obj_byte_size=self.link.bytesRead, list_format="i"
                 )
@@ -209,12 +179,13 @@ class RobotAPI:
                         f"Error: Invalid response from {from_addr} to {to_addr} with FC1={FC1} and FC2={FC2}"
                     )
                     return False
+            else:
+                print("Data receipt error. Status:", self.link.status)
+                return False
 
         except Exception as e:
             print("Error:", e)
             return False
-
-        return False
 
     def setTorqueOFF(self, motorID: int):
         """
@@ -236,17 +207,11 @@ class RobotAPI:
         FC1 = self.FC_TORQUE_OFF
         FC2 = 0
         data = motorID
-        # Packet
-        my_array = list()
-        my_array.append(from_addr)
-        my_array.append(to_addr)
-        my_array.append(FC1)
-        my_array.append(FC2)
-        my_array.append(data)
+        send_array = [from_addr, to_addr, FC1, FC2, data]
 
         try:
             # Load the Tx buffer with the packet
-            send_size = self.link.tx_obj(my_array)
+            send_size = self.link.tx_obj(send_array)
             # Send the packet
             self.link.send(send_size)
             # Wait for the packet to be sent
@@ -254,28 +219,16 @@ class RobotAPI:
             # Record the time the packet was sent
             send_time = time.time()
 
-            # Wait for a response
-            data_recieved = True
+            # Wait for response with timeout
             while not self.link.available():
-                if self.link.status < 0:
-                    if self.link.status == txfer.CRC_ERROR:
-                        print("ERROR: CRC_ERROR")
-                    elif self.link.status == txfer.PAYLOAD_ERROR:
-                        print("ERROR: PAYLOAD_ERROR")
-                    elif self.link.status == txfer.STOP_BYTE_ERROR:
-                        print("ERROR: STOP_BYTE_ERROR")
-                    else:
-                        print("ERROR: {}".format(self.link.status))
+                if (time.time() - send_time) > self.RS485_TO:
+                    print("Timeout waiting for response")
                     return False
                 sleep(0.001)
-                # Check for time out
-                if (time.time() - send_time) > self.RS485_TO:
-                    print("Error: Time out")
-                    data_recieved = False
-                    return False
 
-            if data_recieved:
-                # print(f"ByteRead: {self.link.bytesRead}")
+
+            # Process response
+            if self.link.status == txfer.NEW_DATA:
                 # Process the response if needed
                 response = self.link.rx_obj(
                     obj_type=list, obj_byte_size=self.link.bytesRead, list_format="i"
@@ -296,12 +249,13 @@ class RobotAPI:
                         f"Err: Invalid response from {from_addr} to {to_addr} with FC1={FC1} and FC2={FC2}"
                     )
                     return False
+            else:
+                print("Data receipt error. Status:", self.link.status)
+                return False
 
         except Exception as e:
             print("Error:", e)
             return False
-
-        return False
 
     def getTorqueStatus(self, motorID: int):
         """
@@ -323,17 +277,11 @@ class RobotAPI:
         FC1 = self.FC_TORQUE_STATUS
         FC2 = 0
         data = motorID
-        # Packet
-        my_array = list()
-        my_array.append(from_addr)
-        my_array.append(to_addr)
-        my_array.append(FC1)
-        my_array.append(FC2)
-        my_array.append(data)
+        send_array = [from_addr, to_addr, FC1, FC2, data]
 
         try:
             # Load the Tx buffer with the packet
-            send_size = self.link.tx_obj(my_array)
+            send_size = self.link.tx_obj(send_array)
             # Send the packet
             self.link.send(send_size)
             # Wait for the packet to be sent
@@ -341,29 +289,15 @@ class RobotAPI:
             # Record the time the packet was sent
             send_time = time.time()
 
-            # Wait for a response
-            data_recieved = True
+             # Wait for response with timeout
             while not self.link.available():
-                if self.link.status < 0:
-                    if self.link.status == txfer.CRC_ERROR:
-                        print("ERROR: CRC_ERROR")
-                    elif self.link.status == txfer.PAYLOAD_ERROR:
-                        print("ERROR: PAYLOAD_ERROR")
-                    elif self.link.status == txfer.STOP_BYTE_ERROR:
-                        print("ERROR: STOP_BYTE_ERROR")
-                    else:
-                        print("ERROR: {}".format(self.link.status))
-                    return False
-                sleep(0.001)
-                # Check for time out
                 if (time.time() - send_time) > self.RS485_TO:
-                    print("Err: Time out")
-                    data_recieved = False
+                    print("Timeout waiting for response")
                     return -1
+                sleep(0.001)
 
-            if data_recieved:
-                # print(f"ByteRead: {self.link.bytesRead}")
-                # Process the response if needed
+            # Process response
+            if self.link.status == txfer.NEW_DATA:
                 response = self.link.rx_obj(
                     obj_type=list, obj_byte_size=self.link.bytesRead, list_format="i"
                 )
@@ -383,12 +317,13 @@ class RobotAPI:
                         f"Error: Invalid response from {from_addr} to {to_addr} with FC1={FC1} and FC2={FC2}"
                     )
                     return -1
+            else:
+                print("Data receipt error. Status:", self.link.status)
+                return -1
 
         except Exception as e:
             print("Error:", e)
             return -1
-
-        return -1
 
     def _clip(self, value: int, min_value: int, max_value: int):
         """
@@ -582,7 +517,7 @@ class RobotAPI:
 
         Output:
         joint angle
-        -1 if failed to get the joint angle
+        Nan if failed to get the joint angle
 
         """
 
@@ -592,17 +527,11 @@ class RobotAPI:
         FC1 = self.FC_READ_ANGLE
         FC2 = 0
         data = motorID
-        # Packet
-        my_array = list()
-        my_array.append(from_addr)
-        my_array.append(to_addr)
-        my_array.append(FC1)
-        my_array.append(FC2)
-        my_array.append(data)
+        send_array = [from_addr, to_addr, FC1, FC2, data]
 
         try:
             # Load the Tx buffer with the packet
-            send_size = self.link.tx_obj(my_array)
+            send_size = self.link.tx_obj(send_array)
             # Send the packet
             self.link.send(send_size)
             # Wait for the packet to be sent
@@ -610,29 +539,15 @@ class RobotAPI:
             # Record the time the packet was sent
             send_time = time.time()
 
-            # Wait for a response
-            data_recieved = True
+            # Wait for response with timeout
             while not self.link.available():
-                if self.link.status < 0:
-                    if self.link.status == txfer.CRC_ERROR:
-                        print("ERROR: CRC_ERROR")
-                    elif self.link.status == txfer.PAYLOAD_ERROR:
-                        print("ERROR: PAYLOAD_ERROR")
-                    elif self.link.status == txfer.STOP_BYTE_ERROR:
-                        print("ERROR: STOP_BYTE_ERROR")
-                    else:
-                        print("ERROR: {}".format(self.link.status))
-                    return False
-                sleep(0.001)
-                # Check for time out
                 if (time.time() - send_time) > self.RS485_TO:
-                    print("Err: Time out")
-                    data_recieved = False
+                    print("Timeout waiting for response")
                     return -1
+                sleep(0.001)
 
-            if data_recieved:
-                # print(f"ByteRead: {self.link.bytesRead}")
-                # Process the response if needed
+            # Process response
+            if self.link.status == txfer.NEW_DATA:
                 response = self.link.rx_obj(
                     obj_type=list, obj_byte_size=self.link.bytesRead, list_format="i"
                 )
@@ -656,12 +571,13 @@ class RobotAPI:
                         f"Error: Invalid response from {from_addr} to {to_addr} with FC1={FC1} and FC2={FC2}"
                     )
                     return -1
+            else:
+                print("Data receipt error. Status:", self.link.status)
+                return -1
 
         except Exception as e:
             print("Error:", e)
             return -1
-
-        return -1
 
     def setJointAngle(
         self,
@@ -689,19 +605,12 @@ class RobotAPI:
         to_addr = self.ADDR_MEGA
         FC1 = self.FC_WRITE_ANGLE
         FC2 = 0
-        # Packet
-        my_array = list()
-        my_array.append(from_addr)
-        my_array.append(to_addr)
-        my_array.append(FC1)
-        my_array.append(FC2)
-        my_array.append(motorID)
         motorAngle = self._mapAngleToRobot(self.rob, motorID, angle, unit)
-        my_array.append(motorAngle)
+        send_array = [from_addr, to_addr, FC1, FC2, motorID, motorAngle]
 
         try:
             # Load the Tx buffer with the packet
-            send_size = self.link.tx_obj(my_array)
+            send_size = self.link.tx_obj(send_array)
             # Send the packet
             self.link.send(send_size)
             # Wait for the packet to be sent
@@ -709,29 +618,15 @@ class RobotAPI:
             # Record the time the packet was sent
             send_time = time.time()
 
-            # Wait for a response
-            data_recieved = True
+            # Wait for response with timeout
             while not self.link.available():
-                if self.link.status < 0:
-                    if self.link.status == txfer.CRC_ERROR:
-                        print("ERROR: CRC_ERROR")
-                    elif self.link.status == txfer.PAYLOAD_ERROR:
-                        print("ERROR: PAYLOAD_ERROR")
-                    elif self.link.status == txfer.STOP_BYTE_ERROR:
-                        print("ERROR: STOP_BYTE_ERROR")
-                    else:
-                        print("ERROR: {}".format(self.link.status))
-                    return False
-                sleep(0.001)
-                # Check for time out
                 if (time.time() - send_time) > self.RS485_TO:
-                    print("Err: Time out")
-                    data_recieved = False
+                    print("Timeout waiting for response")
                     return -1
+                sleep(0.001)
 
-            if data_recieved:
-                # print(f"ByteRead: {self.link.bytesRead}")
-                # Process the response if needed
+            # Process response
+            if self.link.status == txfer.NEW_DATA:
                 response = self.link.rx_obj(
                     obj_type=list, obj_byte_size=self.link.bytesRead, list_format="i"
                 )
@@ -754,23 +649,24 @@ class RobotAPI:
                         f"Error: Invalid response from {from_addr} to {to_addr} with FC1={FC1} and FC2={FC2}"
                     )
                     return -1
+            else:
+                print("Data receipt error. Status:", self.link.status)
+                return -1
 
         except Exception as e:
             print("Error:", e)
             return -1
 
-        return -1
-
-    def penDown(self, angle = 30):
+    def penDown(self, angle=30):
         """
         Description:
         Pen down
 
-        Input: angle in degrees: 30-Deg for 2R, 90-Deg for 5-bar
+        Input:
+            angle in degrees: 30-Deg for 2R, 90-Deg for 5-bar
 
         Output:
-        No feedback available from the servo motor. Inspect visually.
-
+            No feedback available from the servo motor. Inspect visually.
         """
 
         # Packet to send
@@ -778,74 +674,52 @@ class RobotAPI:
         to_addr = self.ADDR_MEGA
         FC1 = self.FC_PEN_SERVO
         FC2 = 0
-        data = angle  # pen down => move servo to 30 degrees
-        # Packet
-        my_array = list()
-        my_array.append(from_addr)
-        my_array.append(to_addr)
-        my_array.append(FC1)
-        my_array.append(FC2)
-        my_array.append(data)
+        data = angle
+        send_array = [from_addr, to_addr, FC1, FC2, data]
 
         try:
-            # Load the Tx buffer with the packet
-            send_size = self.link.tx_obj(my_array)
-            # Send the packet
+            # Load Tx buffer
+            send_size = self.link.tx_obj(send_array)
             self.link.send(send_size)
-            # Wait for the packet to be sent
-            sleep(0.001)
-            # Record the time the packet was sent
+            sleep(0.001)  # allow transmission
             send_time = time.time()
 
-            # Wait for a response
-            data_recieved = True
+            # Wait for response with timeout
             while not self.link.available():
-                if self.link.status < 0:
-                    if self.link.status == txfer.CRC_ERROR:
-                        print("ERROR: CRC_ERROR")
-                    elif self.link.status == txfer.PAYLOAD_ERROR:
-                        print("ERROR: PAYLOAD_ERROR")
-                    elif self.link.status == txfer.STOP_BYTE_ERROR:
-                        print("ERROR: STOP_BYTE_ERROR")
-                    else:
-                        print("ERROR: {}".format(self.link.status))
+                if (time.time() - send_time) > self.RS485_TO:
+                    print("Timeout waiting for response")
                     return False
                 sleep(0.001)
 
-                if (time.time() - send_time) > self.RS485_TO:
-                    print("Err: Time out")
-                    data_recieved = False
-                    return False
-
-            if data_recieved:
-                # print(f"ByteRead: {self.link.bytesRead}")
-                # Process the response if needed
+            # Process response
+            if self.link.status == txfer.NEW_DATA:
                 response = self.link.rx_obj(
-                    obj_type=list, obj_byte_size=self.link.bytesRead, list_format="i"
+                    obj_type=list,
+                    obj_byte_size=self.link.bytesRead,
+                    list_format="i"
                 )
-                from_addr = response[0]
-                to_addr = response[1]
-                FC1 = response[2]
-                FC2 = response[3]
+                from_addr, to_addr, FC1, FC2, data = response[:5]
+
                 if (
                     from_addr == self.ADDR_MEGA
                     and to_addr == self.ADDR_PC
                     and FC1 == 0
                     and FC2 == self.FC_PEN_SERVO
                 ):
-                    data = response[4]
                     return data
                 else:
                     print(
-                        f"Error: Invalid response from {from_addr} to {to_addr} with FC1={FC1} and FC2={FC2}"
+                        f"Error: Invalid response from {from_addr} "
+                        f"to {to_addr} with FC1={FC1} and FC2={FC2}"
                     )
                     return False
+            else:
+                print("Data receipt error. Status:", self.link.status)
+                return False
 
         except Exception as e:
             print("Error:", e)
             return False
-
-        return False
 
     def penUp(self):
         """
@@ -865,17 +739,11 @@ class RobotAPI:
         FC1 = self.FC_PEN_SERVO
         FC2 = 0
         data = 0  # pen up => move servo to 0 degrees
-        # Packet
-        my_array = list()
-        my_array.append(from_addr)
-        my_array.append(to_addr)
-        my_array.append(FC1)
-        my_array.append(FC2)
-        my_array.append(data)
+        send_array = [from_addr, to_addr, FC1, FC2, data]
 
         try:
             # Load the Tx buffer with the packet
-            send_size = self.link.tx_obj(my_array)
+            send_size = self.link.tx_obj(send_array)
             # Send the packet
             self.link.send(send_size)
             # Wait for the packet to be sent
@@ -883,55 +751,42 @@ class RobotAPI:
             # Record the time the packet was sent
             send_time = time.time()
 
-            # Wait for a response
-            data_recieved = True
+            # Wait for response with timeout
             while not self.link.available():
-                if self.link.status < 0:
-                    if self.link.status == txfer.CRC_ERROR:
-                        print("ERROR: CRC_ERROR")
-                    elif self.link.status == txfer.PAYLOAD_ERROR:
-                        print("ERROR: PAYLOAD_ERROR")
-                    elif self.link.status == txfer.STOP_BYTE_ERROR:
-                        print("ERROR: STOP_BYTE_ERROR")
-                    else:
-                        print("ERROR: {}".format(self.link.status))
+                if (time.time() - send_time) > self.RS485_TO:
+                    print("Timeout waiting for response")
                     return False
                 sleep(0.001)
-                # Check for time out
-                if (time.time() - send_time) > self.RS485_TO:
-                    print("Err: Time out")
-                    data_recieved = False
-                    return False
 
-            if data_recieved:
-                # print(f"ByteRead: {self.link.bytesRead}")
-                # Process the response if needed
+            # Process response
+            if self.link.status == txfer.NEW_DATA:
                 response = self.link.rx_obj(
-                    obj_type=list, obj_byte_size=self.link.bytesRead, list_format="i"
+                    obj_type=list,
+                    obj_byte_size=self.link.bytesRead,
+                    list_format="i"
                 )
-                from_addr = response[0]
-                to_addr = response[1]
-                FC1 = response[2]
-                FC2 = response[3]
+                from_addr, to_addr, FC1, FC2, data = response[:5]
+
                 if (
                     from_addr == self.ADDR_MEGA
                     and to_addr == self.ADDR_PC
                     and FC1 == 0
                     and FC2 == self.FC_PEN_SERVO
                 ):
-                    data = response[4]
                     return data
                 else:
                     print(
-                        f"Error: Invalid response from {from_addr} to {to_addr} with FC1={FC1} and FC2={FC2}"
+                        f"Error: Invalid response from {from_addr} "
+                        f"to {to_addr} with FC1={FC1} and FC2={FC2}"
                     )
                     return False
+            else:
+                print("Data receipt error. Status:", self.link.status)
+                return False
 
         except Exception as e:
             print("Error:", e)
             return False
-
-        return False
 
     def _mapAngVelFromMotor(self, val_10bit: int):
         """
@@ -980,17 +835,11 @@ class RobotAPI:
         to_addr = self.ADDR_MEGA
         FC1 = self.FC_READ_STATE
         FC2 = 0
-        # Packet
-        my_array = list()
-        my_array.append(from_addr)
-        my_array.append(to_addr)
-        my_array.append(FC1)
-        my_array.append(FC2)
-        my_array.append(motorID)
+        send_array = [from_addr, to_addr, FC1, FC2, motorID]
 
         try:
             # Load the Tx buffer with the packet
-            send_size = self.link.tx_obj(my_array)
+            send_size = self.link.tx_obj(send_array)
             # Send the packet
             self.link.send(send_size)
             # Wait for the packet to be sent
@@ -998,29 +847,15 @@ class RobotAPI:
             # Record the time the packet was sent
             send_time = time.time()
 
-            # Wait for a response
-            data_recieved = True
+            # Wait for response with timeout
             while not self.link.available():
-                if self.link.status < 0:
-                    if self.link.status == txfer.CRC_ERROR:
-                        print("ERROR: CRC_ERROR")
-                    elif self.link.status == txfer.PAYLOAD_ERROR:
-                        print("ERROR: PAYLOAD_ERROR")
-                    elif self.link.status == txfer.STOP_BYTE_ERROR:
-                        print("ERROR: STOP_BYTE_ERROR")
-                    else:
-                        print("ERROR: {}".format(self.link.status))
-                    return False
-                sleep(0.001)
-                # Check for time out
                 if (time.time() - send_time) > self.RS485_TO:
-                    print("Err: Time out")
-                    data_recieved = False
+                    print("Timeout waiting for response")
                     return -1
+                sleep(0.001)
 
-            if data_recieved:
-                # print(f"ByteRead: {self.link.bytesRead}")
-                # Process the response if needed
+            # Process response
+            if self.link.status == txfer.NEW_DATA:
                 response = self.link.rx_obj(
                     obj_type=list, obj_byte_size=self.link.bytesRead, list_format="i"
                 )
@@ -1042,12 +877,13 @@ class RobotAPI:
                         f"Error: Invalid response from {from_addr} to {to_addr} with FC1={FC1} and FC2={FC2}"
                     )
                     return -1
+            else:
+                print("Data receipt error. Status:", self.link.status)
+                return -1
 
         except Exception as e:
             print("Error:", e)
             return -1
-
-        return -1
 
     def _mapAngVelToMotor(self, vel: float):
         """
@@ -1111,21 +947,13 @@ class RobotAPI:
         to_addr = self.ADDR_MEGA
         FC1 = self.FC_WRITE_STATE
         FC2 = 0
-        # Packet
-        my_array = list()
-        my_array.append(from_addr)
-        my_array.append(to_addr)
-        my_array.append(FC1)
-        my_array.append(FC2)
-        my_array.append(motorID)
         motorAngle = self._mapAngleToRobot(self.rob, motorID, state[0])
-        my_array.append(motorAngle)
         motorSpeed = self._mapAngVelToMotor(state[1])
-        my_array.append(motorSpeed)
+        send_array = [from_addr, to_addr, FC1, FC2, motorID, motorAngle, motorSpeed]
 
         try:
             # Load the Tx buffer with the packet
-            send_size = self.link.tx_obj(my_array)
+            send_size = self.link.tx_obj(send_array)
             # Send the packet
             self.link.send(send_size)
             # Wait for the packet to be sent
@@ -1133,29 +961,15 @@ class RobotAPI:
             # Record the time the packet was sent
             send_time = time.time()
 
-            # Wait for a response
-            data_recieved = True
+            # Wait for response with timeout
             while not self.link.available():
-                if self.link.status < 0:
-                    if self.link.status == txfer.CRC_ERROR:
-                        print("ERROR: CRC_ERROR")
-                    elif self.link.status == txfer.PAYLOAD_ERROR:
-                        print("ERROR: PAYLOAD_ERROR")
-                    elif self.link.status == txfer.STOP_BYTE_ERROR:
-                        print("ERROR: STOP_BYTE_ERROR")
-                    else:
-                        print("ERROR: {}".format(self.link.status))
-                    return False
-                sleep(0.001)
-                # Check for time out
                 if (time.time() - send_time) > self.RS485_TO:
-                    print("Err: Time out")
-                    data_recieved = False
+                    print("Timeout waiting for response")
                     return -1
+                sleep(0.001)
 
-            if data_recieved:
-                # print(f"ByteRead: {self.link.bytesRead}")
-                # Process the response if needed
+            # Process response
+            if self.link.status == txfer.NEW_DATA:
                 response = self.link.rx_obj(
                     obj_type=list, obj_byte_size=self.link.bytesRead, list_format="i"
                 )
@@ -1178,12 +992,13 @@ class RobotAPI:
                         f"Error: Invalid response from {from_addr} to {to_addr} with FC1={FC1} and FC2={FC2}"
                     )
                     return -1
+            else:
+                print("Data receipt error. Status:", self.link.status)
+                return -1
 
         except Exception as e:
             print("Error:", e)
             return -1
-
-        return -1
 
     def getRobotState(self):
         """
@@ -1205,17 +1020,11 @@ class RobotAPI:
         FC1 = self.FC_READ_ROBOT_STATE
         FC2 = 0
         # Packet
-        my_array = list()
-        my_array.append(from_addr)
-        my_array.append(to_addr)
-        my_array.append(FC1)
-        my_array.append(FC2)
-        my_array.append(1)  # motor ID 1
-        my_array.append(2)  # motor ID 2
+        send_array = [from_addr, to_addr, FC1, FC2, 1, 2]  # 1: motor ID 1, 2: motor ID 2
 
         try:
             # Load the Tx buffer with the packet
-            send_size = self.link.tx_obj(my_array)
+            send_size = self.link.tx_obj(send_array)
             # Send the packet
             self.link.send(send_size)
             # Wait for the packet to be sent
@@ -1223,29 +1032,15 @@ class RobotAPI:
             # Record the time the packet was sent
             send_time = time.time()
 
-            # Wait for a response
-            data_recieved = True
+            # Wait for response with timeout
             while not self.link.available():
-                if self.link.status < 0:
-                    if self.link.status == txfer.CRC_ERROR:
-                        print("ERROR: CRC_ERROR")
-                    elif self.link.status == txfer.PAYLOAD_ERROR:
-                        print("ERROR: PAYLOAD_ERROR")
-                    elif self.link.status == txfer.STOP_BYTE_ERROR:
-                        print("ERROR: STOP_BYTE_ERROR")
-                    else:
-                        print("ERROR: {}".format(self.link.status))
-                    return False
-                sleep(0.001)
-                # Check for time out
                 if (time.time() - send_time) > self.RS485_TO:
-                    print("Err: Time out")
-                    data_recieved = False
+                    print("Timeout waiting for response")
                     return -1
-
-            if data_recieved:
-                # print(f"ByteRead: {self.link.bytesRead}")
-                # Process the response if needed
+                sleep(0.001)
+            
+            # Process response
+            if self.link.status == txfer.NEW_DATA:
                 response = self.link.rx_obj(
                     obj_type=list, obj_byte_size=self.link.bytesRead, list_format="i"
                 )
@@ -1269,12 +1064,13 @@ class RobotAPI:
                         f"Error: Invalid response from {from_addr} to {to_addr} with FC1={FC1} and FC2={FC2}"
                     )
                     return -1
+            else:
+                print("Data receipt error. Status:", self.link.status)
+                return -1
 
         except Exception as e:
             print("Error:", e)
             return -1
-
-        return -1
 
     def setRobotState(self, state: list):
         """
@@ -1301,26 +1097,18 @@ class RobotAPI:
         to_addr = self.ADDR_MEGA
         FC1 = self.FC_WRITE_ROBOT_STATE
         FC2 = 0
-        # Packet
-        my_array = list()
-        my_array.append(from_addr)
-        my_array.append(to_addr)
-        my_array.append(FC1)
-        my_array.append(FC2)
-        my_array.append(1)  # motor ID 1
-        my_array.append(2)  # motor ID 2
         motorAngle1 = self._mapAngleToRobot(self.rob, 1, state[0][0])
-        my_array.append(motorAngle1)
         motorSpeed1 = self._mapAngVelToMotor(state[0][1])
-        my_array.append(motorSpeed1)
         motorAngle2 = self._mapAngleToRobot(self.rob, 2, state[1][0])
-        my_array.append(motorAngle2)
         motorSpeed2 = self._mapAngVelToMotor(state[1][1])
-        my_array.append(motorSpeed2)
+        send_array = [
+            from_addr, to_addr, FC1, FC2, 1, 2,
+            motorAngle1, motorSpeed1, motorAngle2, motorSpeed2
+        ]
 
         try:
             # Load the Tx buffer with the packet
-            send_size = self.link.tx_obj(my_array)
+            send_size = self.link.tx_obj(send_array)
             # Send the packet
             self.link.send(send_size)
             # Wait for the packet to be sent
@@ -1328,29 +1116,15 @@ class RobotAPI:
             # Record the time the packet was sent
             send_time = time.time()
 
-            # Wait for a response
-            data_recieved = True
+            # Wait for response with timeout
             while not self.link.available():
-                if self.link.status < 0:
-                    if self.link.status == txfer.CRC_ERROR:
-                        print("ERROR: CRC_ERROR")
-                    elif self.link.status == txfer.PAYLOAD_ERROR:
-                        print("ERROR: PAYLOAD_ERROR")
-                    elif self.link.status == txfer.STOP_BYTE_ERROR:
-                        print("ERROR: STOP_BYTE_ERROR")
-                    else:
-                        print("ERROR: {}".format(self.link.status))
-                    return False
-                sleep(0.001)
-                # Check for time out
                 if (time.time() - send_time) > self.RS485_TO:
-                    print("Err: Time out")
-                    data_recieved = False
+                    print("Timeout waiting for response")
                     return -1
+                sleep(0.001)
 
-            if data_recieved:
-                # print(f"ByteRead: {self.link.bytesRead}")
-                # Process the response if needed
+            # Process response
+            if self.link.status == txfer.NEW_DATA:
                 response = self.link.rx_obj(
                     obj_type=list, obj_byte_size=self.link.bytesRead, list_format="i"
                 )
@@ -1358,7 +1132,7 @@ class RobotAPI:
                 to_addr = response[1]
                 FC1 = response[2]
                 FC2 = response[3]
-
+                # print("setRobotState: Response: ", response)
                 if (
                     from_addr == self.ADDR_MEGA
                     and to_addr == self.ADDR_PC
@@ -1373,12 +1147,13 @@ class RobotAPI:
                         f"Error: Invalid response from {from_addr} to {to_addr} with FC1={FC1} and FC2={FC2}"
                     )
                     return -1
+            else:
+                print("Data receipt error. Status:", self.link.status)
+                return -1
 
         except Exception as e:
             print("Error:", e)
             return -1
-
-        return -1
 
     def goHome(self):
         """
@@ -1428,26 +1203,15 @@ class RobotAPI:
         to_addr = self.ADDR_MEGA
         FC1 = self.FC_RW_ROBOT_STATE
         FC2 = 0
-        # Packet
-        my_array = list()
-        my_array.append(from_addr)
-        my_array.append(to_addr)
-        my_array.append(FC1)
-        my_array.append(FC2)
-        my_array.append(1)  # motor ID 1
-        my_array.append(2)  # motor ID 2
         motorAngle1 = self._mapAngleToRobot(self.rob, 1, state[0][0])
-        my_array.append(motorAngle1)
         motorSpeed1 = self._mapAngVelToMotor(state[0][1])
-        my_array.append(motorSpeed1)
         motorAngle2 = self._mapAngleToRobot(self.rob, 2, state[1][0])
-        my_array.append(motorAngle2)
         motorSpeed2 = self._mapAngVelToMotor(state[1][1])
-        my_array.append(motorSpeed2)
+        send_array = [from_addr, to_addr, FC1, FC2, 1, 2, motorAngle1, motorSpeed1, motorAngle2, motorSpeed2]
 
         try:
             # Load the Tx buffer with the packet
-            send_size = self.link.tx_obj(my_array)
+            send_size = self.link.tx_obj(send_array)
             # Send the packet
             self.link.send(send_size)
             # Wait for the packet to be sent
@@ -1455,29 +1219,15 @@ class RobotAPI:
             # Record the time the packet was sent
             send_time = time.time()
 
-            # Wait for a response
-            data_recieved = True
+            # Wait for response with timeout
             while not self.link.available():
-                if self.link.status < 0:
-                    if self.link.status == txfer.CRC_ERROR:
-                        print("ERROR: CRC_ERROR")
-                    elif self.link.status == txfer.PAYLOAD_ERROR:
-                        print("ERROR: PAYLOAD_ERROR")
-                    elif self.link.status == txfer.STOP_BYTE_ERROR:
-                        print("ERROR: STOP_BYTE_ERROR")
-                    else:
-                        print("ERROR: {}".format(self.link.status))
-                    return False
-                sleep(0.001)
-                # Check for time out
                 if (time.time() - send_time) > self.RS485_TO:
-                    print("Err: Time out")
-                    data_recieved = False
+                    print("Timeout waiting for response")
                     return -1
+                sleep(0.001)
 
-            if data_recieved:
-                # print(f"ByteRead: {self.link.bytesRead}")
-                # Process the response if needed
+            # Process response
+            if self.link.status == txfer.NEW_DATA:
                 response = self.link.rx_obj(
                     obj_type=list, obj_byte_size=self.link.bytesRead, list_format="i"
                 )
@@ -1502,9 +1252,10 @@ class RobotAPI:
                         f"Error: Invalid response from {from_addr} to {to_addr} with FC1={FC1} and FC2={FC2}"
                     )
                     return -1
+            else:
+                print("Data receipt error. Status:", self.link.status)
+                return -1
 
         except Exception as e:
             print("Error:", e)
             return -1
-
-        return -1
