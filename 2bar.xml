@@ -1,0 +1,77 @@
+<mujoco model="5bar">
+
+  <compiler angle="radian"/>
+  <option integrator = "implicit" timestep = "0.002" 
+          jacobian = "dense" cone = "elliptic"
+          solver = "Newton" tolerance="1e-10"/>
+
+  <visual>
+    <headlight diffuse="0.6 0.6 0.6" ambient="0.3 0.3 0.3" specular="0 0 0"/>
+    <rgba haze="0.15 0.25 0.35 1"/>
+    <global azimuth="160" elevation="-20"/>
+  </visual>
+
+
+  <asset>
+      <texture type="skybox" builtin="gradient" rgb1=".3 .5 .7" rgb2="0 0 0" width="512" height="512"/>
+      <texture name="grid" type="2d" builtin="checker" width="512" height="512" rgb1=".1 .2 .3" rgb2=".2 .3 .4"/>
+      <material name="grid" texture="grid" texrepeat="1 1" texuniform="true" reflectance=".2"/>
+  </asset>
+
+  <!-- Worldbody: the ground (plane) -->
+  <worldbody>
+
+    <light pos="0 0 1.5" dir="0 0 -1" directional="true"/>
+    <geom name="floor" size="0.5 0.5 0.05" type="plane" material="grid"/>
+
+    <!-- Proximal link left side -->
+    <body name="l1_left" pos="0 0.0 0.05">
+      <joint name="j1_left" type="hinge" pos="0 0 0" axis="0 0 1" range="-0.785 1.57" frictionloss="0.005"/>
+      <geom type="capsule" fromto="0 0 0 0.2 0 0" size="0.01" density="800" rgba="0 0.5 0.5 0.8"/>
+      
+      <!-- Distal link left side -->
+      <body name="l2_left" pos="0.2 0 0">
+        <joint name="j2_left" type="hinge" pos="0 0 0" axis="0 0 1" frictionloss="0.005"/>
+        <geom type="capsule" fromto="0 0 0 0.2 0.0 0" size="0.01" density="800"  contype="0" conaffinity="0" />
+        
+        <!-- Pen (Cylinder) attached to the tip of the distal link (left side) -->
+        <body name="pen" pos="0.2 -0.0 0">
+          <joint name="pen_joint" type="hinge" pos="0 0 0" axis="0 0 1" frictionloss="0.005" />
+          <geom type="cylinder" size="0.01 0.05" pos="0 0 0.03" rgba="0 0 1 0.8"  contype="0" conaffinity="0"/>
+          <geom type="box" size="0.012 0.012 0.012" pos="0 0 0.07" rgba="0 0 1 0.8"/>
+          <site name="site_pen" pos="0 0 0"/>
+        </body>
+      </body>
+    </body>  
+
+    <!-- Proximal link right side -->
+    <!-- <body name="l1_right" pos="0 -0.0335 0.05">
+      <joint name="j1_right" type="hinge" pos="0 0 0" axis="0 0 1" range="-1.57 0.785" frictionloss="0.005"/>
+      <geom type="capsule" fromto="0 0 0 0.2 0 0" size="0.01" density="800" rgba="0.5 0 0.5 0.8" /> -->
+      
+      <!-- Distal link right side -->
+      <!-- <body name="l2_right" pos="0.2 0 0">
+        <joint name="j2_right" type="hinge" pos="0 0 0" axis="0 0 1" frictionloss="0.005" />
+        <geom type="capsule" fromto="0 0 0 0.19717 0.0335 0" size="0.01" density="800" contype="0" conaffinity="0"/> -->
+<!--        <site name="site_l2r_end" pos="0.2 0 0"/>-->
+      <!-- </body> -->
+    <!-- </body> -->
+
+  </worldbody>
+
+
+  <!-- Constraints -->
+  <!-- <equality> -->
+    <!-- Connect constraint to make a pin joint between the pen and the second arm -->
+    <!-- <connect body1="l2_right" body2="pen" anchor="0.19717 0.0335 0" /> -->
+  <!-- </equality> -->
+
+  <!-- Actuation -->
+  <actuator>
+     <position name="motor_pos_one" joint="j1_left" kp="2" kv="0.08" ctrlrange="-1.57 1.57"/>
+     <position name="motor_pos_two" joint="j2_left" kp="2" kv="0.08" ctrlrange="-3.14 3.14"/>
+   <!-- <motor name="motor_torque_left" joint="j1_left"  />
+<motor name="motor_torque_right" joint="j1_right" /> -->
+  </actuator>
+
+</mujoco>
